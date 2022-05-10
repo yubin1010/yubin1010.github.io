@@ -34,6 +34,7 @@ markdown: kramdown
 permalink: /:year/:month/:day/:title/
 plugins:
   - jekyll-paginate
+  - jekyll-polyglot
 
 paginate: 7
 paginate_path: "/page/:num/"
@@ -50,3 +51,8 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - vendor
+
+languages: ['ja', 'ko', 'en']
+default_lang: 'ko'
+exclude_from_localization: ['javascript', 'images', 'css']
+parallel_localization: false
