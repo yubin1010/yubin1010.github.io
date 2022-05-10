@@ -7,6 +7,8 @@ categories: daily
 
 글또는 [글쓰는 또라이가 세상을 바꾼다] 라는 뜻을 가진 개발자 글쓰기 커뮤니티입니다.  2022년 5월부터 10월까지 글또로서 활동하게 되었습니다. 글또 첫 시작을 글또를 하게 된 이유와 다짐으로 시작해보려고 합니다.
 
+<br/><br/>
+
 ![geultto-thumbnail](./img/geultto-thumbnail.png)
 
 <br/><br/>
