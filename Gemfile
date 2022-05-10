@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 source "https://rubygems.org"
-gem "jekyll-theme-yat"
-gemspec
 
+gem "plainwhite"
+gem "webrick", "~> 1.7"
