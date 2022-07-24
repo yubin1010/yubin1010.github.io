@@ -1,0 +1,131 @@
+---
+layout: post
+title:  "AWX"
+date:   2022-07-24 10:35:00 +0900
+categories: Infra
+---
+
+이전의 Ansible을 쉽게 작업하기 위해 GUI 환경에서 ansible을 관리할 수 있는 AWX에 대해 알아보고자 합니다.
+
+# AWX
+
+###  AWX란?    
+![awx.png](/img/awx.png)
+    
+AWX는 AnsibleWorks,Inc를 Redhat 에서 인수하며 Ansible worker를 OSS로 공개하기로 결정하였고 기존 소스의 패키지 이름인 AWX를 사용해 지금의 AWX가 되었습니다. 즉 Ansible Tower의 OSS가 AWX입니다. 
+
+AWX는 playbook을 관리하고 운영하는데 필요한 여러 기능을 제공합니다. 
+
+- Ansible Project Managemnet and Host Managemnet
+- Provisioning and Configuration Management
+- CD(Continuous Delivery) 및 Workflow Tmeplate
+- 중앙 집중식 로깅/감사 기능 제공
+- Authentication 연동(LDAP, SAML, Github, Google, Azure AD)
+- 시각적 웹 대시보드
+- 고가용성
+
+(출처: [https://medium.com/@dudwls96/ansible-awx-open-source-란-f1eabe0d1949](https://medium.com/@dudwls96/ansible-awx-open-source-%EB%9E%80-f1eabe0d1949))
+
+&nbsp;
+&nbsp;
+
+### 설치
+    
+AWX는 version 17을 기준으로 설치 방법이 달라집니다. Version 17이하는 Linux OS 위에 Docker를 기반으로 설치가 진행되며, Version 18이상 부터는 Kubernetes 기반 위에 설치가 진행되는 것을 기본으로 하고 있습니다. 저는 version 17에 대한 설치를 진행해보겠습니다.
+
+1. 요구사항
+    - 4GB 이상의 메모리
+    - 2코어 이상의 CPU
+    - 20GB이상의 공간
+    - Docker, Python 3.6 이상, Ansible 2.8이상
+2. selinux 종료
+    
+    ```bash
+    sed -i 's|SELINUX=enforcing|SELINUX=disabled|g' /etc/selinux/config
+    reboot
+    sestatus (확인)
+    ```
+    
+3. Python 설치
+    
+    ```bash
+    yum -y install epel-release
+    yum -y install python3-pip
+    ```
+    
+4. Docker 설치
+    1. repository  설정
+        
+        ```bash
+        yum install -y yum-utils
+        yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+        ```
+        
+    2. Docekr CE 설치
+        
+        ```bash
+        yum install docker-ce
+        alternatives --install /usr/bin/python python /usr/bin/python3.6 100
+        ```
+        
+    3. Dokcer 서비스 실행 및 등록
+        
+        ```bash
+        1. systemctl start docker && systemctl enable docker
+        2. 확인
+        [root@cent bin]# systemctl status docker
+        ● docker.service - Docker Application Container Engine
+           Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; vendor preset: disabled)
+           Active: **active (running)** since 일 2022-07-24 15:26:25 KST; 22s ago
+             Docs: https://docs.docker.com
+         Main PID: 4437 (dockerd)
+           CGroup: /system.slice/docker.service
+                   └─4437 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+        ```
+        
+    4. Dokcer-Compose 설치
+        
+        ```bash
+        pip3 install docker-compose
+        ```
+        
+5. AWX 설치
+    1. Working 디렉토리 생성
+        
+        ```bash
+        mkdir [directory 이름]
+        cd [directory 이름]
+        ```
+        
+    2. 소스 복제
+        
+        ```bash
+        git clone -b 17.1.0 https://github.com/Ansible/awx.git
+        ```
+        
+    3. Configure
+        
+        ```bash
+        1. vi awx/installer/inventory
+         1) 관리자 User/password 지정
+        # This will create or update a default admin (superuser) account in AWX, if not provided
+        # then these default values are used
+        admin_user=admin
+        # admin_password=password
+        
+         2) Project 파일 경로 지정 - AWX는 내부적으로 Postgre SQL을 DB로 사용하고 해당 DB가 컨테이너로 구동됩니다. 때문에 Project 파일을 내부에 저장하기 위해 해당 항목을 설정합니다.
+        # AWX project data folder. If you need access to the location where AWX stores the projects
+        # it manages from the docker host, you can set this to turn it into a volume for the container.
+        project_data_dir=/var/lib/awx/projects
+        ```
+        
+    4. install playbook 실행
+        
+        ```bash
+        cd /test/awx/installer(awx 설치 경로)
+        ansible-playbook -i inventory install.yml
+        ```
+        
+6. 확인
+    
+    ![awx2.png](/img/awx2.PNG)
