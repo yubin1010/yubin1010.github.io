@@ -1,0 +1,68 @@
+---
+layout: post
+title:  "AWX 활용"
+date:   2022-08-21 12:35:00 +0900
+categories: Infra
+---
+
+이전에 AWX를 설치했다면 이번에는 직접 설정들을 추가하고 계정을 추가하는 playbook을 수행해보도록 하겠습니다.
+
+![awx.png](/img/awx.png)
+
+### AWX UI
+
+1. Credentials
+    
+    : 대상에 접근하기 위한 권한을 등록합니다. 접근하는 대상은 서버, Github가 될 수 있습니다. 일반적으로 서버 접근을 위한 ssh private key 혹은 비밀번호 등록을 통해 내용은 노출하지 않으면서 권한 있는 사용자가 사용할 수 있도록 합니다.
+    
+2. Projects
+    
+    : Git이나 SVN에서 보통 서비스 단위로 사용되는 프로젝트를 관리합니다.
+    
+3. Inventories
+    
+    : 작업할 대상 서버의 목록입니다. IP 혹은 lookup 가능한 hostname을 관리합니다. 그룹 단위로도 관리 할 수 있는데 그룹 안에 그룹을 포함할 수도 있습니다.
+    
+4. Templates
+    
+    : Inventories 목록의 서버에 대해 credential로 접근 권한을 얻어서 프로젝트에 있는 playbook을 실행합니다. 템플릿을 만들기 위해서는 inventories, project, credentials가 먼저 등록되어야하고 템플릿에서 해당 정보를 조합하여 동작합니다.
+    
+&nbsp;
+&nbsp;
+
+### 기본 사용법
+
+1. Credential 등록(ssh private key)
+    1. Crendential 메뉴 → Add → Credential Type 에서 Machine 선택 → Username에서 접속 계정 입력 → ssh private key 붙여 넣기 → 저장
+    
+        ![aws-1.PNG](/img/awx-1.PNG)
+    
+2. 프로젝트 등록(Git 등록)
+    1. Project 메뉴 → ADD → SCM Type에서 Git 선택 → SCM URL 입력 → SCM BRANCH/TAG/COMMIT에 브랜치/태그 입력 → 저장 → 동기화(Git clone)
+        
+        ![awx-2.PNG](/img/awx-2.PNG)
+        
+    2. 프로젝트 생성 후 우측 화살표를 클릭해 정상적으로 동기화 되는지 확인합니다. 동기화가 되지 않으면 AWX 서버에  playbook이 생성되지 않고 템플릿 작성 시 playbook을 등록할 수 없습니다.
+        
+        ![awx-3.PNG](/img/awx-3.PNG)
+        
+3. Inventories 등록
+    1. Inventories 메뉴 → ADD → Name 입력 후 Save → Edit 클릭 →  HOSTS 클릭 → ADD → HOST NAME에 IP 혹은 lookup 가능한 hostname 입력 → Save
+        
+        ![awx-4.PNG](/img/awx-4.PNG)
+        
+4. Template 작성
+    1. Templates 메뉴 → ADD → 앞서 작성한 인벤토리, 프로젝트, Credential 선택 → Playbook 에서 앞서 작성한 playbook 선택 → Save
+        
+        ![awx-5.PNG](/img/awx-5.PNG)
+        
+5. Playbook 실행
+    1. 템플릿 등록 후 Launcher 버튼을 눌러 Playbook을 실행합니다. 저는 대상 호스트에 /etc/ansible/test 라는 directory를 생성하는 palybook을 실행하였습니다.
+        
+        ![awx-6.PNG](/img/awx-6.PNG)
+        
+    2. 실행 결과를 확인합니다. 대상 서버에 정상적으로 디렉터리가 생성되었습니다.
+        
+        ![awx-7.PNG](/img/awx-7.png)
+
+        ![awx-8.PNG](/img/awx-8.png)
