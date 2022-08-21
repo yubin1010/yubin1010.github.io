@@ -5,7 +5,7 @@ date:   2022-08-21 12:35:00 +0900
 categories: Infra
 ---
 
-이전에 AWX를 설치했다면 이번에는 직접 설정들을 추가하고 계정을 추가하는 playbook을 수행해보도록 하겠습니다.
+이전에 AWX를 설치했다면 이번에는 직접 설정들을 추가하고 디렉터리를 생성하는 playbook을 수행해보도록 하겠습니다.
 
 ![awx.png](/img/awx.png)
 
@@ -63,6 +63,6 @@ categories: Infra
         
     2. 실행 결과를 확인합니다. 대상 서버에 정상적으로 디렉터리가 생성되었습니다.
         
-        ![awx-7.PNG](/img/awx-7.png)
+        ![awx-7.PNG](/img/awx-7.PNG)
 
-        ![awx-8.PNG](/img/awx-8.png)
+        ![awx-8.PNG](/img/awx-8.PNG)
